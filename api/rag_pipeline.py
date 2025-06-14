@@ -6,9 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-client = chromadb.Client(chromadb.config.Settings(chroma_db_impl="duckdb+parquet", persist_directory="../embeddings/"))
-collection = client.get_collection("tds")
-
+client = chromadb.PersistentClient(path="../embeddings/")
+collection = client.get_or_create_collection("tds")
 def retrieve_context(question, k=3):
     question_embedding = openai.Embedding.create(
         input=question,
